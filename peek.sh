@@ -1,10 +1,22 @@
 filename=$1
 noOfLines=$2
 
-first=$(head -n "$noOfLines" "$filename")
+if [[ -z $noOfLines ]]; then
+    noOfLines=3
+fi
 
-last=$(tail -n "$noOfLines" "$filename")
+lineCount=$(cat $filename | wc -l)
 
-concatenated="$first \n ... \n $last"
+if [[  $lineCount -gt 2*$noOfLines ]]; then
+    cat $filename
+else
+    first=$(head -n "$noOfLines" "$filename")
 
-echo $concatenated
+    last=$(tail -n "$noOfLines" "$filename")
+
+    concatenated="$first \n ... \n $last"
+
+    echo "WARNING: LINE PRINTING STARTS!!!"
+
+    echo $concatenated
+fi
