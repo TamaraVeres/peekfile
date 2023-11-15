@@ -11,19 +11,23 @@ lines=0
 
 if [ -n "$1" ]; then
     folder="$1"
+    echo "Chosen folder: $folder"
+else
+    echo "Folder to seach not given. Defaulting to current dir."
 fi
 
 if [ -n "$2" ]; then
     lines="$2"
+    echo "Number of lines: $lines"
+else
+    echo "Number of lines not given. Defaulting to zero."
 fi
 
-echo "Chosen folder: $folder"
-echo "Number of lines: $lines"
+
 
 echo "################## Fa/Fasta REPORT ########################"
 
 # how many such files there are
-
 
 files=$(find $folder -type f -name "*.fa")
 
@@ -31,7 +35,7 @@ fileCount=$(echo "$files" | wc -l)
 
 # how many unique fasta IDs (i.e. the first words of fasta headers) they contain in total 
 
-aaa=""
+ids=""
 
 echo "#######################################"
 for file in $files; do
@@ -47,14 +51,16 @@ for file in $files; do
     echo "There are $total_sequences nummber of sequences inside the file."
 
     first_word=$(awk '{print $1; exit}' $file)
-    aaa="$aaa$first_word "
+    ids="$ids$first_word "
     echo "#######################################"
 done
 
-aaa=$(echo "$aaa" | tr ' ' '\n' | sort -u)
+echo "$ids"
+
+ids=$(echo "$ids" | tr ' ' '\n' | sort -u)
 
 
-uniqueIDs=$(echo "$aaa" | wc -l)
+uniqueIDs=$(echo "$ids" | wc -l)
 
 echo "=== FA/FASTA FILE COUNT: $fileCount ==="
 echo "=== Unique Fasta ID COUNT: $uniqueIDs ==="
