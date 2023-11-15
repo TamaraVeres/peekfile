@@ -18,19 +18,45 @@ if [ -n "$2" ]; then
 fi
 
 echo "Chosen folder: $folder"
-echo "NUmber of lines: $lines"
+echo "Number of lines: $lines"
 
 echo "################## Fa/Fasta REPORT ########################"
 
 # how many such files there are
 
+
 files=$(find $folder -type f -name "*.fa")
 
-fileCount=$(echo $files | wc -l)
+fileCount=$(echo "$files" | wc -l)
 
 # how many unique fasta IDs (i.e. the first words of fasta headers) they contain in total 
 
-uniqueIDs=$(echo "$files" | awk -F' ' '{print $1}' | sort -u | wc -l)
+aaa=""
 
-echo "=== Unique FA/FASTA FILE COUNT: $fileCount ==="
+echo "#######################################"
+for file in $files; do
+    echo "Analysing $file"
+
+    if [ -h "$file" ]; then
+        echo "The file is a symbolic link."
+    else
+        echo "The file is not a symbolic link."
+    fi
+
+    total_sequences=$(grep -c '^>' "$file")
+    echo "There are $total_sequences nummber of sequences inside the file."
+
+    first_word=$(awk '{print $1; exit}' $file)
+    aaa="$aaa$first_word "
+    echo "#######################################"
+done
+
+aaa=$(echo "$aaa" | tr ' ' '\n' | sort -u)
+
+
+uniqueIDs=$(echo "$aaa" | wc -l)
+
+echo "=== FA/FASTA FILE COUNT: $fileCount ==="
 echo "=== Unique Fasta ID COUNT: $uniqueIDs ==="
+
+
