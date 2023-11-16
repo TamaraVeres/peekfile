@@ -29,7 +29,7 @@ echo "################## Fa/Fasta REPORT ########################"
 
 # how many such files there are
 
-files=$(find $folder -type f -name "*.fa")
+files=$(find $folder -type f -name "*.fa*")
 
 fileCount=$(echo "$files" | wc -l)
 
@@ -39,19 +39,48 @@ ids=""
 
 echo "#######################################"
 for file in $files; do
-    echo "Analysing $file"
+    echo "-> Analysing $file"
 
     if [ -h "$file" ]; then
-        echo "The file is a symbolic link."
+        echo "[!] The file is a symbolic link."
     else
-        echo "The file is not a symbolic link."
+        echo "[x] The file is not a symbolic link."
     fi
 
     total_sequences=$(grep -c '^>' "$file")
-    echo "There are $total_sequences nummber of sequences inside the file."
+    echo "[S]: There are $total_sequences number of sequences inside the file."
 
     first_word=$(awk '{print $1; exit}' $file)
     ids="$ids$first_word "
+    sequence_length=$(awk '/^>/ {next} {gsub(/[-\n]/,""); sum += length} END {print sum}' "$file")
+    echo "[L]: The total sequence length for the file is $sequence_length."
+
+    # Check if the file contains characters specific to nucleotide sequences
+    if grep -q -E '[^ACGTUNacgtun]' "$file"; then
+        echo "[A]: The file contains amino acid sequences."
+    else
+        echo "[N]: The file contains nucleotide sequences."
+    fi
+
+    echo ""
+
+    line_length=$(cat "$file" | wc -l)
+
+    if [ ! $lines -eq 0 ]; then
+        if [[ $line_length -le 2*$lines ]]; then
+            content=$(cat "$file")
+            echo "$content"
+        else
+            if [[ $line_length -gt 0 ]]; then
+                first_lines=$(head -n "$lines" "$file")
+                last_lines=$(tail -n "$lines" "$file")
+                echo "$first_lines"
+                echo "..."
+                echo "$last_lines"
+            fi
+        fi
+    echo ""
+    fi
     echo "#######################################"
 done
 
