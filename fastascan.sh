@@ -29,7 +29,7 @@ echo "################## Fa/Fasta REPORT ########################"
 
 # how many such files there are
 
-files=$(find $folder -type f -name "*.fa*")
+files=$(find "$folder" -type f \( -name "*.fa" -o -name "*.fasta" \))
 
 fileCount=$(echo "$files" | wc -l)
 
