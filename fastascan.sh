@@ -13,7 +13,7 @@ if [ -n "$1" ]; then
     folder="$1"
     echo "Chosen folder: $folder"
 else
-    echo "Folder to seach not given. Defaulting to current dir."
+    echo "Folder to search not given. Defaulting to current dir."
 fi
 
 if [ -n "$2" ]; then
