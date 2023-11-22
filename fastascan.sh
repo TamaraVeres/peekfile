@@ -84,10 +84,7 @@ for file in $files; do
     echo "#######################################"
 done
 
-echo "$ids"
-
 ids=$(echo "$ids" | tr ' ' '\n' | sort -u)
-
 
 uniqueIDs=$(echo "$ids" | wc -l)
 
